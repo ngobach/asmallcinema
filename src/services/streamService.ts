@@ -1,3 +1,5 @@
+import { resolveAllStreams } from '../sources';
+
 export interface StremioStream {
   title: string;
   url: string;
@@ -10,18 +12,8 @@ export interface StremioStream {
 }
 
 /**
- * Resolves available streams for a given movie video ID
+ * Resolves available streams for a given movie video ID by querying the registry
  */
-export function getStreamsForMovie(id: string): StremioStream[] {
-  // Mock data representing available stream options
-  return [
-    {
-      title: "Big Buck Bunny (HLS stream)",
-      url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
-    },
-    {
-      title: "Big Buck Bunny (MP4 direct)",
-      url: "https://www.w3schools.com/html/mov_bbb.mp4"
-    }
-  ];
+export async function getStreamsForMovie(id: string): Promise<StremioStream[]> {
+  return await resolveAllStreams('movie', id);
 }

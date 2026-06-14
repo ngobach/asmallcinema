@@ -3,7 +3,7 @@ import { MovieSource, StreamRequest } from './types';
 import { chromium } from 'playwright';
 import { consola } from 'consola';
 import { PUBLIC_URL } from '../config';
-import { createDefaultContext } from '../utils/browser';
+import { createDefaultContext, DEFAULT_USER_AGENT } from '../utils/browser';
 
 /**
  * Factory function to construct VidKing embed URLs.
@@ -63,7 +63,15 @@ export const vikiSource: MovieSource = {
         return [
           {
             title: "[Viki] Direct HLS Stream",
-            url: m3u8Url
+            url: m3u8Url,
+            behaviorHints: {
+              proxyHeaders: {
+                request: {
+                  "User-Agent": DEFAULT_USER_AGENT,
+                  "Referer": "https://www.vidking.net/"
+                }
+              }
+            }
           },
           {
             title: "[Viki] Proxied HLS Stream",

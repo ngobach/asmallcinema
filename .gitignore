@@ -61,3 +61,6 @@ web_modules/
 
 # Production build outputs
 dist/
+
+# Local env file
+.env

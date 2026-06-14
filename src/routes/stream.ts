@@ -1,0 +1,23 @@
+import { defineEventHandler } from 'h3';
+import { getStreamsForMovie } from '../services/streamService';
+
+export default defineEventHandler((event) => {
+  const type = event.context.params?.type;
+  let id = event.context.params?.id;
+
+  // Stremio passes ID as "tt0111161.json". We strip the extension to get the clean ID.
+  if (id && id.endsWith('.json')) {
+    id = id.slice(0, -5);
+  }
+
+  console.log(`Received stream request for type: ${type}, id: ${id}`);
+
+  // Resolve streams for movie resource type
+  if (type === 'movie' && id) {
+    const streams = getStreamsForMovie(id);
+    return { streams };
+  }
+
+  // Fallback empty list
+  return { streams: [] };
+});

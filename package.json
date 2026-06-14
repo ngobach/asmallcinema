@@ -1,7 +1,7 @@
 {
-  "name": "stremio-h3-helloworld",
+  "name": "asmallcinema",
   "version": "1.0.0",
-  "description": "A Stremio Hello World addon built using H3 and TypeScript",
+  "description": "A Stremio addon for asmallcinema built using H3 and TypeScript",
   "main": "src/index.ts",
   "type": "module",
   "packageManager": "bun@1.3.14",

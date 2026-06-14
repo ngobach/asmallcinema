@@ -6,6 +6,6 @@ import app from './app';
 const PORT = process.env.PORT || 3005;
 const server = createServer(toNodeListener(app));
 server.listen(PORT, () => {
-  console.log(`🚀 Stremio Hello World Addon is running!`);
+  console.log(`🚀 asmallcinema addon is running!`);
   console.log(`👉 Install Manifest URL in Stremio: http://localhost:${PORT}/manifest.json`);
 });

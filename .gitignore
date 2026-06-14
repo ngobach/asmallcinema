@@ -58,3 +58,6 @@ web_modules/
 
 # Optional REPL history
 .node_repl_h
+
+# Production build outputs
+dist/

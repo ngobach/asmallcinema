@@ -1,4 +1,4 @@
-import { createApp, createRouter, defineEventHandler, setHeader } from 'h3';
+import { createApp, createRouter, defineEventHandler, handleCors } from 'h3';
 import manifestRoute from './routes/manifest';
 import streamRoute from './routes/stream';
 
@@ -6,13 +6,13 @@ const app = createApp();
 
 // Global middleware to handle CORS for Stremio web app clients
 app.use(defineEventHandler((event) => {
-  setHeader(event, 'Access-Control-Allow-Origin', '*');
-  setHeader(event, 'Access-Control-Allow-Headers', '*');
-  setHeader(event, 'Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  
-  if (event.node.req.method === 'OPTIONS') {
-    event.node.res.statusCode = 204;
-    return '';
+  const cors = handleCors(event, {
+    origin: '*',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowHeaders: ['*']
+  });
+  if (cors) {
+    return cors;
   }
 }));
 

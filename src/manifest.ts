@@ -1,5 +1,7 @@
+import { ADDON_ID } from './config';
+
 export const manifest = {
-  id: process.env.ADDON_ID || "community.asmallcinema",
+  id: ADDON_ID,
   version: "1.0.0",
   name: "asmallcinema",
   description: "A Stremio addon for asmallcinema.",

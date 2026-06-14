@@ -1,11 +1,11 @@
 import { consola } from 'consola';
 import { StremioStream } from '../services/streamService';
 import { MovieSource, StreamRequest } from './types';
-import { ceebeeSource } from './ceebee';
+import { vikiSource } from './viki';
 
 // List of all registered movie sources
 const sources: MovieSource[] = [
-  ceebeeSource
+  vikiSource
 ];
 
 /**

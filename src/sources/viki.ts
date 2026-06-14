@@ -1,4 +1,5 @@
 import { StremioStream } from '../services/streamService';
+import { getTmdbIdFromImdb } from '../services/wikidataService';
 import { MovieSource, StreamRequest } from './types';
 import { chromium } from 'playwright';
 import { consola } from 'consola';
@@ -21,7 +22,10 @@ export const vikiSource: MovieSource = {
   async getStreams(req: StreamRequest): Promise<StremioStream[]> {
     consola.debug("[Viki] Launching headless browser to resolve stream...");
     
-    const tmdbId = req.id.type === 'tmdb' ? req.id.value : '278';
+    let tmdbId = req.id.type === 'tmdb' ? req.id.value : null;
+    if (!tmdbId) {
+      tmdbId = await getTmdbIdFromImdb(req.id.value);
+    }
     const targetUrl = req.type === 'movie'
       ? buildVidkingUrl(tmdbId)
       : buildVidkingUrl(tmdbId, req.season, req.episode);
@@ -65,6 +69,7 @@ export const vikiSource: MovieSource = {
             title: "[Viki] Direct HLS Stream",
             url: m3u8Url,
             behaviorHints: {
+              notWebReady: true,
               proxyHeaders: {
                 request: {
                   "User-Agent": DEFAULT_USER_AGENT,

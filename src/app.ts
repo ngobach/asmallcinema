@@ -1,4 +1,4 @@
-import { createApp, createRouter, defineEventHandler, handleCors } from 'h3';
+import { createApp, createRouter, defineEventHandler, handleCors, sendRedirect } from 'h3';
 import manifestRoute from './routes/manifest';
 import streamRoute from './routes/stream';
 
@@ -17,6 +17,11 @@ app.use(defineEventHandler((event) => {
 }));
 
 const router = createRouter();
+
+// Redirect root to manifest
+router.get('/', defineEventHandler((event) => {
+  return sendRedirect(event, '/manifest.json', 302);
+}));
 
 // Register Stremio Addon routes
 router.get('/manifest.json', manifestRoute);

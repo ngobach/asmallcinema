@@ -9,6 +9,7 @@
     "dev": "bun --watch src/index.ts"
   },
   "dependencies": {
+    "consola": "^3.4.2",
     "h3": "^1.15.0"
   },
   "devDependencies": {

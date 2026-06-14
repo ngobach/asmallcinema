@@ -1,4 +1,5 @@
 import { defineEventHandler } from 'h3';
+import { consola } from 'consola';
 import { getStreamsForMovie } from '../services/streamService';
 
 export default defineEventHandler((event) => {
@@ -10,7 +11,7 @@ export default defineEventHandler((event) => {
     id = id.slice(0, -5);
   }
 
-  console.log(`Received stream request for type: ${type}, id: ${id}`);
+  consola.info(`Received stream request for type: ${type}, id: ${id}`);
 
   // Resolve streams for movie resource type
   if (type === 'movie' && id) {

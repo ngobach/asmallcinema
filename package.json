@@ -12,6 +12,7 @@
     "h3": "^1.15.0"
   },
   "devDependencies": {
-    "@types/node": "^20.11.0"
+    "@types/node": "^20.11.0",
+    "typescript": "^6.0.3"
   }
 }

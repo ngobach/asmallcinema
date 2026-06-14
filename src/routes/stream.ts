@@ -1,6 +1,7 @@
 import { defineEventHandler } from 'h3';
 import { consola } from 'consola';
-import { getStreamsForMovie } from '../services/streamService';
+import { getStreams } from '../services/streamService';
+import { parseStreamRequest } from '../sources/types';
 
 export default defineEventHandler(async (event) => {
   const type = event.context.params?.type;
@@ -13,10 +14,12 @@ export default defineEventHandler(async (event) => {
 
   consola.info(`Received stream request for type: ${type}, id: ${id}`);
 
-  // Resolve streams for movie resource type
-  if (type === 'movie' && id) {
-    const streams = await getStreamsForMovie(id);
-    return { streams };
+  if (type && id) {
+    const req = parseStreamRequest(type, id);
+    if (req) {
+      const streams = await getStreams(req);
+      return { streams };
+    }
   }
 
   // Fallback empty list

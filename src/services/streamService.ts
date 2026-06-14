@@ -1,4 +1,5 @@
 import { resolveAllStreams } from '../sources';
+import { StreamRequest } from '../sources/types';
 
 export interface StremioStream {
   title: string;
@@ -12,8 +13,8 @@ export interface StremioStream {
 }
 
 /**
- * Resolves available streams for a given movie video ID by querying the registry
+ * Resolves available streams for a given media request by querying the registry
  */
-export async function getStreamsForMovie(id: string): Promise<StremioStream[]> {
-  return await resolveAllStreams('movie', id);
+export async function getStreams(req: StreamRequest): Promise<StremioStream[]> {
+  return await resolveAllStreams(req);
 }

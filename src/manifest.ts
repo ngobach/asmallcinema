@@ -4,6 +4,6 @@ export const manifest = {
   name: "asmallcinema",
   description: "A Stremio addon for asmallcinema.",
   resources: ["stream"],
-  types: ["movie"],
+  types: ["movie", "series"],
   catalogs: []
 };

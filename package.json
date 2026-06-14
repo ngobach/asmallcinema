@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "consola": "^3.4.2",
-    "h3": "^1.15.0"
+    "h3": "^1.15.0",
+    "playwright": "^1.60.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

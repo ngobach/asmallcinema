@@ -18,11 +18,7 @@ export default function NotFound() {
       <h1 className="text-4xl font-extrabold text-white tracking-tight mb-3">
         Page Not Found
       </h1>
-      
-      {/* Code Badge */}
-      <span className="inline-block font-mono text-xs text-neutral-500 bg-neutral-900 border border-neutral-800 rounded px-2.5 py-1 mb-6">
-        ERROR CODE: 404
-      </span>
+
 
       {/* Description */}
       <p className="text-neutral-400 text-sm leading-relaxed mb-8">

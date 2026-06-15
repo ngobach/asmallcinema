@@ -1,6 +1,6 @@
 {
   "name": "asmallcinema",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A Stremio addon for asmallcinema built using H3 and TypeScript",
   "main": "src/index.ts",
   "type": "module",

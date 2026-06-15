@@ -2,6 +2,7 @@
   "name": "asmallcinema-monorepo",
   "private": true,
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "tools/*"
   ]
 }

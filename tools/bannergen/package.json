@@ -1,0 +1,16 @@
+{
+  "name": "bannergen",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "bun src/index.tsx"
+  },
+  "dependencies": {
+    "react": "^19.2.7",
+    "satori": "^0.26.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "typescript": "^6.0.3"
+  }
+}

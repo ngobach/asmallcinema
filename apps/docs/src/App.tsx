@@ -3,8 +3,10 @@ import DefaultLayout from './layouts/DefaultLayout';
 import Dashboard from './pages/Dashboard';
 
 function App() {
+  const basename = import.meta.env.BASE_URL.replace(/\/$/, '');
+
   return (
-    <Router>
+    <Router basename={basename}>
       <Switch>
         <Route exact path="/">
           <DefaultLayout>

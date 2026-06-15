@@ -8,4 +8,5 @@ export default defineConfig({
     react(),
     UnoCSS(),
   ],
+  base: process.env.GITHUB_ACTIONS ? '/asmallcinema/' : '/',
 })

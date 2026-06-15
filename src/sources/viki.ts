@@ -12,7 +12,7 @@ import { createDefaultContext, DEFAULT_USER_AGENT } from '../utils/browser';
  */
 function buildVidkingUrl(tmdbId: string, season?: number, episode?: number): string {
   if (season !== undefined && episode !== undefined) {
-    return `https://www.vidking.net/embed/series/${tmdbId}/${season}/${episode}`;
+    return `https://www.vidking.net/embed/tv/${tmdbId}/${season}/${episode}`;
   }
   return `https://www.vidking.net/embed/movie/${tmdbId}`;
 }

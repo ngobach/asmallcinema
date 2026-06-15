@@ -6,12 +6,12 @@ import Banner from './Banner';
 async function generate() {
   console.log('Fetching online font assets (Instrument Sans)...');
   const [fontRegular, fontBold] = await Promise.all([
-    fetch('https://cdn.jsdelivr.net/npm/@fontsource/instrument-sans/files/instrument-sans-latin-400-normal.ttf')
+    fetch('https://fonts.gstatic.com/s/instrumentsans/v4/pximypc9vsFDm051Uf6KVwgkfoSxQ0GsQv8ToedPibnr-yp2JGEJOH9npSTF-Tfykyk.ttf')
       .then(res => {
         if (!res.ok) throw new Error(`Failed to fetch Regular font: ${res.status} ${res.statusText}`);
         return res.arrayBuffer();
       }),
-    fetch('https://cdn.jsdelivr.net/npm/@fontsource/instrument-sans/files/instrument-sans-latin-700-normal.ttf')
+    fetch('https://fonts.gstatic.com/s/instrumentsans/v4/pximypc9vsFDm051Uf6KVwgkfoSxQ0GsQv8ToedPibnr-yp2JGEJOH9npSQi_jfykyk.ttf')
       .then(res => {
         if (!res.ok) throw new Error(`Failed to fetch Bold font: ${res.status} ${res.statusText}`);
         return res.arrayBuffer();
@@ -22,8 +22,8 @@ async function generate() {
   const svg = await satori(
     <Banner />,
     {
-      width: 1200,
-      height: 500,
+      width: 800,
+      height: 350,
       fonts: [
         {
           name: 'Instrument Sans',

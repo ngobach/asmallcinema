@@ -41,6 +41,8 @@ jobs:
 
       - name: Build Docs
         run: bun run --filter docs build
+        env:
+          VITE_ADDON_HOST: https://asmallcinema.ngobach.com/
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

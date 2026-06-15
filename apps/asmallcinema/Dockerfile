@@ -8,8 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     && bunx playwright install-deps chromium \
     && bunx playwright install chromium \
     && rm -rf /var/lib/apt/lists/* /root/.bun/install/cache
-
-COPY src tsconfig.json ./
+COPY . ./
 
 EXPOSE 3005
 ENV PORT=3005

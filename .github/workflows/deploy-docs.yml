@@ -2,8 +2,9 @@ name: Deploy Documentation to GitHub Pages
 
 on:
   push:
-    tags:
-      - '**'
+    branches:
+      - main
+  workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:

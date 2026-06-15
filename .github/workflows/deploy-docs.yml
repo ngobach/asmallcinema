@@ -2,12 +2,8 @@ name: Deploy Documentation to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - 'apps/docs/**'
-      - '.github/workflows/deploy-docs.yml'
-  workflow_dispatch:
+    tags:
+      - '**'
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:

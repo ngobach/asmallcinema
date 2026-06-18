@@ -66,7 +66,7 @@ export const vikiSource: MovieSource = {
 
         return [
           {
-            title: "[Viki] Direct HLS Stream",
+            title: "[Viki] Direct",
             url: m3u8Url,
             behaviorHints: {
               notWebReady: true,
@@ -79,7 +79,7 @@ export const vikiSource: MovieSource = {
             }
           },
           {
-            title: "[Viki] Proxied HLS Stream",
+            title: "[Viki] Proxied",
             url: proxiedUrl
           }
         ];

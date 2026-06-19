@@ -3,6 +3,7 @@ import { consola } from 'consola';
 import manifestRoute from './routes/manifest';
 import streamRoute from './routes/stream';
 import proxyRoute from './routes/proxy';
+import { ADDON_HOME_PAGE } from './config';
 
 const app = createApp();
 
@@ -21,9 +22,9 @@ app.use(defineEventHandler((event) => {
 
 const router = createRouter();
 
-// Redirect root to manifest
+// Redirect root to addon's home page
 router.get('/', defineEventHandler((event) => {
-  return sendRedirect(event, '/manifest.json', 302);
+  return sendRedirect(event, ADDON_HOME_PAGE, 302);
 }));
 
 // Register Stremio Addon routes

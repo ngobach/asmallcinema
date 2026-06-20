@@ -6,6 +6,7 @@ export interface StremioStream {
   url: string;
   behaviorHints?: {
     notWebReady?: boolean;
+    bingeGroup?: string;
     proxyHeaders?: {
       request?: Record<string, string>;
     };

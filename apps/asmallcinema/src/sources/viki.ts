@@ -70,6 +70,7 @@ export const vikiSource: MovieSource = {
             url: m3u8Url,
             behaviorHints: {
               notWebReady: true,
+              bingeGroup: "viki-direct",
               proxyHeaders: {
                 request: {
                   "User-Agent": DEFAULT_USER_AGENT,
@@ -80,7 +81,10 @@ export const vikiSource: MovieSource = {
           },
           {
             title: "[Viki] Proxied",
-            url: proxiedUrl
+            url: proxiedUrl,
+            behaviorHints: {
+              bingeGroup: "viki-proxied"
+            }
           }
         ];
       }

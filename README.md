@@ -6,7 +6,7 @@
 
 ## Overview
 
-**A Small Cinema** is a high-performance Stremio addon monorepo tailored for resolving Asian drama and movie streams. It leverages Playwright for dynamic browser-based scraping and provides robust Wikidata ID mapping.
+**A Small Cinema** is a high-performance Stremio addon monorepo tailored for resolving Asian drama and movie streams. It leverages Playwright for dynamic browser-based scraping and resolves IMDb IDs to TMDB IDs through the official TMDB API.
 
 ## Monorepo Workspaces
 

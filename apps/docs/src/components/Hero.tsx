@@ -5,7 +5,7 @@ export default function Hero() {
         A Small Cinema
       </h1>
       <p className="text-neutral-400 text-lg md:text-xl max-w-2xl font-light leading-relaxed">
-        A high-performance Stremio addon providing seamless resolution of Asian dramas and movies with Playwright-backed stream resolution and transparent Wikidata ID mappings.
+        A high-performance Stremio addon providing seamless resolution of Asian dramas and movies with Playwright-backed stream resolution and transparent TMDB ID mappings.
       </p>
     </div>
   );

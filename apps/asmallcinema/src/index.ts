@@ -2,13 +2,17 @@ import { toNodeListener } from 'h3';
 import { createServer } from 'node:http';
 import { consola } from 'consola';
 import app from './app';
-import { PORT, PUBLIC_URL } from './config';
+import { PORT, PUBLIC_URL, TMDB_API_KEY } from './config';
 import { manifest } from './manifest';
 import { closeBrowser, getBrowserContext } from './utils/browser';
 import { closeCdpBrowser } from './utils/cdpBrowser';
 
 // Launch the shared Playwright browser context once at startup
 await getBrowserContext();
+
+if (!TMDB_API_KEY) {
+  consola.warn('TMDB_API_KEY is not set. IMDb IDs cannot be resolved to TMDB IDs.');
+}
 
 const server = createServer(toNodeListener(app));
 

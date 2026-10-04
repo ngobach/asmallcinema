@@ -1,5 +1,5 @@
 import { StremioStream } from '../services/streamService';
-import { getTmdbIdFromImdb } from '../services/wikidataService';
+import { getTmdbIdFromImdb } from '../services/tmdbService';
 import { MovieSource, StreamRequest } from './types';
 import { consola } from 'consola';
 import { PUBLIC_URL } from '../config';

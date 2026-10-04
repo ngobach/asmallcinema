@@ -37,7 +37,7 @@ export default function Banner() {
           A Small Cinema
         </h1>
         <p style={{ fontSize: '18px', color: '#a1a1aa', maxWidth: '680px', margin: 0, lineHeight: 1.4, fontWeight: 400 }}>
-          A high-performance Stremio addon resolving Asian dramas and movies via Playwright-backed stream scraping and automated Wikidata ID mappings.
+          A high-performance Stremio addon resolving Asian dramas and movies via Playwright-backed stream scraping and automated TMDB ID mappings.
         </p>
       </div>
 
@@ -53,7 +53,7 @@ export default function Banner() {
           H3 Server
         </div>
         <div style={{ border: '1px solid #27272a', borderRadius: '8px', padding: '6px 14px', fontSize: '13px', color: '#e4e4e7', backgroundColor: '#09090b', display: 'flex' }}>
-          Wikidata Mapping
+          TMDB Mapping
         </div>
       </div>
     </div>

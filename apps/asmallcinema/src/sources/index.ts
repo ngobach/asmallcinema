@@ -41,6 +41,13 @@ function filterEnabledSources(registry: MovieSource[]): MovieSource[] {
 const sources = filterEnabledSources(allSources);
 
 /**
+ * Whether a source is enabled by the current ENABLED_SOURCES configuration.
+ */
+export function isSourceEnabled(id: string): boolean {
+  return sources.some((source) => source.id === id);
+}
+
+/**
  * Queries all registered sources in parallel, catching any errors 
  * gracefully at the source level, and aggregates the returned stream lists.
  */

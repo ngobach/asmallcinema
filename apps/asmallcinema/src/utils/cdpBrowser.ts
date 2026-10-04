@@ -5,6 +5,7 @@ import { mkdirSync } from 'node:fs';
 import { createServer } from 'node:net';
 import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
+import { BROWSER_IDLE_TIMEOUT_MS, createIdleReleaser } from './idleReleaser';
 
 /**
  * Minimal Chrome DevTools Protocol client over a raw WebSocket.
@@ -107,7 +108,13 @@ const CHROME_STARTUP_TIMEOUT_MS = 30000;
 let chromeProcess: ChildProcess | null = null;
 let connection: CdpConnection | null = null;
 let initPromise: Promise<CdpConnection> | null = null;
-let shuttingDown = false;
+let chromeClosedIntentionally = false;
+
+const idleReleaser = createIdleReleaser({
+  timeoutMs: BROWSER_IDLE_TIMEOUT_MS,
+  label: 'CDP',
+  onRelease: () => closeCdpBrowser()
+});
 
 /**
  * Reserves a free localhost port by binding to port 0 and releasing it again.
@@ -161,6 +168,7 @@ async function launchChrome(): Promise<CdpConnection> {
   const executablePath = chromium.executablePath();
   const port = await findFreePort();
   mkdirSync(dirname(CHROME_PROFILE_DIR), { recursive: true });
+  chromeClosedIntentionally = false;
 
   consola.info('[CDP] Launching dedicated Chromium for VidHive...');
   const proc = spawn(executablePath, [
@@ -184,13 +192,14 @@ async function launchChrome(): Promise<CdpConnection> {
   proc.on('exit', () => {
     chromeProcess = null;
     connection = null;
-    if (!shuttingDown) {
+    if (!chromeClosedIntentionally) {
       consola.warn('[CDP] Dedicated Chromium exited. It will be relaunched on demand.');
     }
   });
 
   const cdp = await CdpConnection.connect(wsUrl);
   consola.success('[CDP] Dedicated Chromium ready.');
+  idleReleaser.markIdle();
   return cdp;
 }
 
@@ -226,39 +235,44 @@ export async function captureFirstMatchingRequest(
   matches: (url: string) => boolean,
   timeoutMs: number
 ): Promise<string | null> {
-  const cdp = await getCdpConnection();
-  const { targetId } = await cdp.send('Target.createTarget', { url: 'about:blank' });
-  const { sessionId } = await cdp.send('Target.attachToTarget', { targetId, flatten: true });
-
-  let timer: ReturnType<typeof setTimeout> | null = null;
-  let unsubscribe: (() => void) | null = null;
-
+  idleReleaser.begin();
   try {
-    await cdp.send('Network.enable', {}, sessionId);
-    await cdp.send('Page.enable', {}, sessionId);
+    const cdp = await getCdpConnection();
+    const { targetId } = await cdp.send('Target.createTarget', { url: 'about:blank' });
+    const { sessionId } = await cdp.send('Target.attachToTarget', { targetId, flatten: true });
 
-    const found = new Promise<string | null>((resolve) => {
-      unsubscribe = cdp.onMessage((msg) => {
-        if (msg.sessionId !== sessionId || msg.method !== 'Network.requestWillBeSent') {
-          return;
-        }
-        const url = msg.params?.request?.url;
-        if (typeof url === 'string' && matches(url)) {
-          resolve(url);
-        }
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    let unsubscribe: (() => void) | null = null;
+
+    try {
+      await cdp.send('Network.enable', {}, sessionId);
+      await cdp.send('Page.enable', {}, sessionId);
+
+      const found = new Promise<string | null>((resolve) => {
+        unsubscribe = cdp.onMessage((msg) => {
+          if (msg.sessionId !== sessionId || msg.method !== 'Network.requestWillBeSent') {
+            return;
+          }
+          const url = msg.params?.request?.url;
+          if (typeof url === 'string' && matches(url)) {
+            resolve(url);
+          }
+        });
+
+        timer = setTimeout(() => resolve(null), timeoutMs);
       });
 
-      timer = setTimeout(() => resolve(null), timeoutMs);
-    });
-
-    await cdp.send('Page.navigate', { url: targetUrl }, sessionId);
-    return await found;
-  } finally {
-    if (timer) {
-      clearTimeout(timer);
+      await cdp.send('Page.navigate', { url: targetUrl }, sessionId);
+      return await found;
+    } finally {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      (unsubscribe as (() => void) | null)?.();
+      await cdp.send('Target.closeTarget', { targetId }).catch(() => {});
     }
-    (unsubscribe as (() => void) | null)?.();
-    await cdp.send('Target.closeTarget', { targetId }).catch(() => {});
+  } finally {
+    idleReleaser.end();
   }
 }
 
@@ -271,10 +285,9 @@ export async function closeCdpBrowser(): Promise<void> {
     return;
   }
 
-  shuttingDown = true;
+  chromeClosedIntentionally = true;
   connection?.close();
   connection = null;
   chromeProcess = null;
   proc.kill();
-  shuttingDown = false;
 }

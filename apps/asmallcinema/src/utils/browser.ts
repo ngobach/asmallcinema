@@ -1,5 +1,6 @@
 import { Browser, BrowserContext, chromium } from 'playwright';
 import { consola } from 'consola';
+import { BROWSER_IDLE_TIMEOUT_MS, createIdleReleaser } from './idleReleaser';
 
 export const DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 
@@ -20,6 +21,22 @@ let context: BrowserContext | null = null;
 let initPromise: Promise<BrowserContext> | null = null;
 let shuttingDown = false;
 
+const idleReleaser = createIdleReleaser({
+  timeoutMs: BROWSER_IDLE_TIMEOUT_MS,
+  label: 'Browser',
+  onRelease: () => closeBrowser()
+});
+
+/** Marks the start of a request that uses the shared browser. */
+export function beginBrowserUse(): void {
+  idleReleaser.begin();
+}
+
+/** Marks the end of a request that uses the shared browser. */
+export function endBrowserUse(): void {
+  idleReleaser.end();
+}
+
 async function launchBrowserContext(): Promise<BrowserContext> {
   consola.info('[Browser] Launching shared Chromium browser...');
   const launched = await chromium.launch({ headless: true });
@@ -36,6 +53,7 @@ async function launchBrowserContext(): Promise<BrowserContext> {
   });
 
   consola.success('[Browser] Shared Chromium context ready.');
+  idleReleaser.markIdle();
   return context;
 }
 

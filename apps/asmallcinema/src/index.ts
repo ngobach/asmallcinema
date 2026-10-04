@@ -4,11 +4,15 @@ import { consola } from 'consola';
 import app from './app';
 import { PORT, PUBLIC_URL, TMDB_API_KEY } from './config';
 import { manifest } from './manifest';
+import { isSourceEnabled } from './sources';
 import { closeBrowser, getBrowserContext } from './utils/browser';
 import { closeCdpBrowser } from './utils/cdpBrowser';
 
-// Launch the shared Playwright browser context once at startup
-await getBrowserContext();
+// Launch the shared Playwright browser context at startup only when the Viki
+// source is enabled; sources launch their browsers on demand otherwise.
+if (isSourceEnabled('viki')) {
+  await getBrowserContext();
+}
 
 if (!TMDB_API_KEY) {
   consola.warn('TMDB_API_KEY is not set. IMDb IDs cannot be resolved to TMDB IDs.');

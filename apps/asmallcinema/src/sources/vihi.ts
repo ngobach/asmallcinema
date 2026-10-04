@@ -38,7 +38,7 @@ export const vihiSource: MovieSource = {
 
     let tmdbId = req.id.type === 'tmdb' ? req.id.value : null;
     if (!tmdbId) {
-      tmdbId = await getTmdbIdFromImdb(req.id.value);
+      tmdbId = await getTmdbIdFromImdb(req.id.value, req.type);
     }
     const targetUrl = req.type === 'movie'
       ? buildVidhiveUrl(tmdbId)

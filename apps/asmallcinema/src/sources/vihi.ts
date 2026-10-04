@@ -31,6 +31,7 @@ function isPlaylistRequest(url: string): boolean {
 }
 
 export const vihiSource: MovieSource = {
+  id: "vihi",
   name: "Vihi",
   async getStreams(req: StreamRequest): Promise<StremioStream[]> {
     consola.debug("[Vihi] Resolving stream via dedicated CDP browser...");

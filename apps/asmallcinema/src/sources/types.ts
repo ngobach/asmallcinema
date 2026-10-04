@@ -28,6 +28,8 @@ export interface SeriesRequest {
 export type StreamRequest = MovieRequest | SeriesRequest;
 
 export interface MovieSource {
+  /** Stable codename used for configuration, e.g. "viki" */
+  id: string;
   name: string;
   getStreams(req: StreamRequest): Promise<StremioStream[]>;
 }

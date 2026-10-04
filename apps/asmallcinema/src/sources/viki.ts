@@ -17,6 +17,7 @@ function buildVidkingUrl(tmdbId: string, season?: number, episode?: number): str
 }
 
 export const vikiSource: MovieSource = {
+  id: "viki",
   name: "Viki",
   async getStreams(req: StreamRequest): Promise<StremioStream[]> {
     consola.debug("[Viki] Resolving stream with shared browser...");

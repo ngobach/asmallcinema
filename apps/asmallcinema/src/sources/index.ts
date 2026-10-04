@@ -2,10 +2,12 @@ import { consola } from 'consola';
 import { StremioStream } from '../services/streamService';
 import { MovieSource, StreamRequest } from './types';
 import { vikiSource } from './viki';
+import { vihiSource } from './vihi';
 
 // List of all registered movie sources
 const sources: MovieSource[] = [
-  vikiSource
+  vikiSource,
+  vihiSource
 ];
 
 /**

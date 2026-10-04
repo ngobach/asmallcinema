@@ -1,10 +1,9 @@
 import { StremioStream } from '../services/streamService';
 import { getTmdbIdFromImdb } from '../services/wikidataService';
 import { MovieSource, StreamRequest } from './types';
-import { chromium } from 'playwright';
 import { consola } from 'consola';
 import { PUBLIC_URL } from '../config';
-import { createDefaultContext, DEFAULT_USER_AGENT } from '../utils/browser';
+import { DEFAULT_USER_AGENT, getBrowserContext } from '../utils/browser';
 
 /**
  * Factory function to construct VidKing embed URLs.
@@ -20,7 +19,7 @@ function buildVidkingUrl(tmdbId: string, season?: number, episode?: number): str
 export const vikiSource: MovieSource = {
   name: "Viki",
   async getStreams(req: StreamRequest): Promise<StremioStream[]> {
-    consola.debug("[Viki] Launching headless browser to resolve stream...");
+    consola.debug("[Viki] Resolving stream with shared browser...");
     
     let tmdbId = req.id.type === 'tmdb' ? req.id.value : null;
     if (!tmdbId) {
@@ -30,13 +29,11 @@ export const vikiSource: MovieSource = {
       ? buildVidkingUrl(tmdbId)
       : buildVidkingUrl(tmdbId, req.season, req.episode);
       
-    const browser = await chromium.launch({ headless: true });
+    // Reuse the app-wide shared browser context; each request gets its own page.
+    const context = await getBrowserContext();
+    const page = await context.newPage();
     
     try {
-      // Create context using the reusable app-level browser configuration
-      const context = await createDefaultContext(browser);
-      const page = await context.newPage();
-      
       // Promise that resolves when a .m3u8 request is captured
       const m3u8Promise = new Promise<string>((resolve) => {
         page.on('request', (request) => {
@@ -91,9 +88,9 @@ export const vikiSource: MovieSource = {
     } catch (error: any) {
       consola.error(`[Viki] Scraping failed: ${error.message}`);
     } finally {
-      // Guarantee browser is closed to avoid memory/process leaks
-      await browser.close();
-      consola.debug("[Viki] Headless browser closed.");
+      // Close the page, not the browser: the shared context stays alive for other requests
+      await page.close().catch(() => {});
+      consola.debug("[Viki] Page closed.");
     }
     
     return [];

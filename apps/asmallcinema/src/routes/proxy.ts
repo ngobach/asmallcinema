@@ -3,6 +3,47 @@ import { PUBLIC_URL } from '../config';
 import { DEFAULT_USER_AGENT } from '../utils/browser';
 
 /**
+ * Derives a file extension for the proxy path from the target URL. Players such
+ * as Stremio's Android ExoPlayer pick the media source from the URL path
+ * extension, so proxied playlist URLs must end in ".m3u8" (or the original
+ * segment extension) instead of a query-only URL.
+ */
+function pickExtension(targetUrl: string): string {
+  try {
+    const pathname = new URL(targetUrl).pathname;
+    const base = pathname.split('/').filter(Boolean).pop() ?? '';
+    const dot = base.lastIndexOf('.');
+    if (dot > -1 && dot < base.length - 1) {
+      const ext = base.slice(dot + 1).toLowerCase();
+      if (/^[a-z0-9]{1,5}$/.test(ext)) {
+        return ext;
+      }
+    }
+  } catch {
+    // Fall through to the default playlist extension
+  }
+  // URLs without an extension (e.g. VidHive's tokenized playlist path) are
+  // playlists, so default to ".m3u8".
+  return 'm3u8';
+}
+
+/**
+ * Builds a proxy URL that preserves the target's media extension in the path,
+ * so downstream players correctly detect the stream type.
+ */
+export function buildProxyUrl(targetUrl: string, referer?: string, userAgent?: string): string {
+  const proxyUrl = new URL(`${PUBLIC_URL}/m3u8-proxy/stream.${pickExtension(targetUrl)}`);
+  proxyUrl.searchParams.set('url', targetUrl);
+  if (referer) {
+    proxyUrl.searchParams.set('referer', referer);
+  }
+  if (userAgent) {
+    proxyUrl.searchParams.set('userAgent', userAgent);
+  }
+  return proxyUrl.toString();
+}
+
+/**
  * Rewrites URLs inside a .m3u8 playlist file to route them through the local proxy.
  * Resolves relative URLs to absolute based on the parent URL, and appends the
  * required Referer and User-Agent parameters.
@@ -22,14 +63,7 @@ function rewriteM3U8(content: string, parentUrl: string, referer?: string, userA
       return trimmed.replace(uriRegex, (match, uriValue) => {
         try {
           const resolvedUrl = new URL(uriValue, parentUrl).toString();
-          let proxyUrl = `${PUBLIC_URL}/m3u8-proxy?url=${encodeURIComponent(resolvedUrl)}`;
-          if (referer) {
-            proxyUrl += `&referer=${encodeURIComponent(referer)}`;
-          }
-          if (userAgent) {
-            proxyUrl += `&userAgent=${encodeURIComponent(userAgent)}`;
-          }
-          return `URI="${proxyUrl}"`;
+          return `URI="${buildProxyUrl(resolvedUrl, referer, userAgent)}"`;
         } catch (e) {
           return match;
         }
@@ -39,14 +73,7 @@ function rewriteM3U8(content: string, parentUrl: string, referer?: string, userA
     // The line is a direct URL resource (sub-playlist or video segment)
     try {
       const resolvedUrl = new URL(trimmed, parentUrl).toString();
-      let proxyUrl = `${PUBLIC_URL}/m3u8-proxy?url=${encodeURIComponent(resolvedUrl)}`;
-      if (referer) {
-        proxyUrl += `&referer=${encodeURIComponent(referer)}`;
-      }
-      if (userAgent) {
-        proxyUrl += `&userAgent=${encodeURIComponent(userAgent)}`;
-      }
-      return proxyUrl;
+      return buildProxyUrl(resolvedUrl, referer, userAgent);
     } catch (e) {
       return line;
     }

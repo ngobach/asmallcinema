@@ -32,7 +32,9 @@ router.get('/', defineEventHandler((event) => {
 // Register Stremio Addon routes
 router.get('/manifest.json', manifestRoute);
 router.get('/stream/:type/:id', streamRoute);
-router.add('/m3u8-proxy', proxyRoute);
+// The extension-preserving path lets players (Stremio Android / ExoPlayer)
+// detect HLS from the URL.
+router.get('/m3u8-proxy/:file', proxyRoute);
 
 // Serve logo.png
 router.get('/logo.png', defineEventHandler((event) => {

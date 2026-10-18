@@ -2,7 +2,7 @@ import { StremioStream } from '../services/streamService';
 import { getTmdbIdFromImdb } from '../services/tmdbService';
 import { MovieSource, StreamRequest } from './types';
 import { consola } from 'consola';
-import { PUBLIC_URL } from '../config';
+import { buildProxyUrl } from '../routes/proxy';
 import { DEFAULT_USER_AGENT } from '../utils/browser';
 import { captureFirstMatchingRequest } from '../utils/cdpBrowser';
 
@@ -58,7 +58,7 @@ export const vihiSource: MovieSource = {
       }
 
       // Construct the proxied stream URL
-      const proxiedUrl = `${PUBLIC_URL}/m3u8-proxy?url=${encodeURIComponent(playlistUrl)}&referer=${encodeURIComponent(VIDHIVE_REFERER)}`;
+      const proxiedUrl = buildProxyUrl(playlistUrl, VIDHIVE_REFERER);
 
       return [
         {

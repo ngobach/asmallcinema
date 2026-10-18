@@ -2,7 +2,7 @@ import { StremioStream } from '../services/streamService';
 import { getTmdbIdFromImdb } from '../services/tmdbService';
 import { MovieSource, StreamRequest } from './types';
 import { consola } from 'consola';
-import { PUBLIC_URL } from '../config';
+import { buildProxyUrl } from '../routes/proxy';
 import { DEFAULT_USER_AGENT, getBrowserContext, beginBrowserUse, endBrowserUse } from '../utils/browser';
 
 /**
@@ -62,7 +62,7 @@ export const vikiSource: MovieSource = {
         
         if (m3u8Url) {
           // Construct the proxied stream URL
-          const proxiedUrl = `${PUBLIC_URL}/m3u8-proxy?url=${encodeURIComponent(m3u8Url)}&referer=${encodeURIComponent('https://www.vidking.net/')}`;
+          const proxiedUrl = buildProxyUrl(m3u8Url, 'https://www.vidking.net/');
 
           return [
             {
